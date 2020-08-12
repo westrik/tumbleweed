@@ -32,9 +32,11 @@ jobs:
         key: ${{ runner.os }}-cargo-build-${{ hashFiles('Cargo.toml') }}-${{ matrix.rust_channel }}
     - name: Specify channel
       run: rustup default ${{ matrix.rust_channel }}
-    - name: Build (with ${{ matrix.web_framework }})
+    - name: Build core (with ${{ matrix.web_framework }})
+      working-directory: ./tumbleweed_core
       run: cargo build --verbose --release --features "with-${{ matrix.web_framework }}"
-    - name: Run tests (with ${{ matrix.web_framework }})
+    - name: Test core (with ${{ matrix.web_framework }})
+      working-directory: ./tumbleweed_core
       run: cargo test --verbose --release --features "with-${{ matrix.web_framework }}"
 
   lint:
