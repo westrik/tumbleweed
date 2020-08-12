@@ -1,0 +1,31 @@
+[package]
+name = "tumbleweed_core"
+version = "0.1.0"
+authors = ["Matt Westrik <m@ttwestrik.com>"]
+edition = "2018"
+
+[features]
+with-warp = ["warp"]
+with-tide = ["tide"]
+
+[dependencies]
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0"
+tumbleweed_derive = { path = "../tumbleweed_derive" }
+
+[dependencies.warp]
+version = "0.2"
+optional = true
+
+[dependencies.tide]
+version = "0.13"
+optional = true
+
+[dev-dependencies]
+criterion = "0.3"
+hyper = "0.13"
+
+#[[bench]]
+#name = "request_response"
+#harness = false

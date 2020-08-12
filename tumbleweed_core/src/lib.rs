@@ -30,6 +30,15 @@ pub struct App {
 //     pub name: String,
 // }
 //
+//
+//
+// struct Session {
+//     pub expires_at: String,
+// }
+// struct RequestContext {
+//     pub session: Session,
+//     pub client_ip: String,
+// }
 // #[derive(Request)]
 // struct CreateNoteRequest {
 //     pub name: String,
@@ -39,14 +48,15 @@ pub struct App {
 //     pub note: Note,
 // }
 // #[endpoint("/note", [PUT, POST])]
-// async fn create_note(_request: CreateNoteRequest) -> ApiResult<CreateNoteResponse> {
+// async fn create_note(request: CreateNoteRequest) -> ApiResult<CreateNoteResponse> {
+//     log!("{:#?", request.context);
 //     Ok(CreateNoteResponse {
 //         note: Note {
 //             name: "my note".to_string()
 //         }
 //     })
 // }
-//
+
 #[cfg(test)]
 mod test_configuration {
     use crate::*;

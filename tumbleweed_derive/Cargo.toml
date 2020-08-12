@@ -1,0 +1,14 @@
+[package]
+name = "tumbleweed_derive"
+version = "0.1.0"
+authors = ["Matt Westrik <m@ttwestrik.com>"]
+edition = "2018"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+lazy_static = "1"
+syn = "1"
+quote = "1"
+proc-macro2 = "1"
