@@ -1,6 +1,10 @@
+
 [workspace]
 members = [
-    "tumbleweed_core",
+    "tumbleweed",
+    "tumbleweed_cli",
+    "tumbleweed_client",
     "tumbleweed_derive",
+    "tumbleweed_persist",
     "tumbleweed_test",
 ]

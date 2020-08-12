@@ -1,0 +1,42 @@
+[package]
+name = "tumbleweed"
+version = "0.1.0"
+authors = ["Matt Westrik <m@ttwestrik.com>"]
+edition = "2018"
+license = "Apache-2.0"
+description = "[work-in-progress] application framework"
+homepage = "https://tumbleweed.westrik.dev"
+repository = "https://github.com/westrik/tumbleweed"
+documentation = "https://tumbleweed.westrik.dev/docs/"
+#keywords = []
+#categories = []
+
+[features]
+with-warp = ["warp"]
+with-tide = ["tide"]
+
+[dependencies]
+dotenv = "0.15" # might not make sense in this crate
+lazy_static = "1.4" # might not make sense in this crate
+log = "0.4" # might not make sense in this crate
+pretty_env_logger = "0.4" # might not make sense in this crate
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0"
+tumbleweed_derive = { path = "../tumbleweed_derive" }
+
+[dependencies.warp]
+version = "0.2"
+optional = true
+
+[dependencies.tide]
+version = "0.13"
+optional = true
+
+[dev-dependencies]
+criterion = "0.3"
+hyper = "0.13" # might not make sense in this crate
+
+#[[bench]]
+#name = "request_response"
+#harness = false
