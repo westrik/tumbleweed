@@ -1,0 +1,61 @@
+name: Build
+
+on: push
+
+jobs:
+  build_with_matrix:
+    name: build
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        rust_channel: [stable, nightly]
+        web_framework: [warp, tide]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Cache cargo registry
+      uses: actions/cache@v1
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('Cargo.toml') }}-${{ matrix.rust_channel }}
+    - name: Cache cargo index
+      uses: actions/cache@v1
+      with:
+        path: ~/.cargo/git
+        key: ${{ runner.os }}-cargo-index-${{ hashFiles('Cargo.toml') }}-${{ matrix.rust_channel }}
+    - name: Cache cargo build
+      uses: actions/cache@v1
+      with:
+        path: ./target
+        key: ${{ runner.os }}-cargo-build-${{ hashFiles('Cargo.toml') }}-${{ matrix.rust_channel }}
+    - name: Specify channel
+      run: rustup default ${{ matrix.rust_channel }}
+    - name: Build (with ${{ matrix.web_framework }})
+      run: cargo build --verbose --release --features "with-${{ matrix.web_framework }}"
+    - name: Run tests (with ${{ matrix.web_framework }})
+      run: cargo test --verbose --release --features "with-${{ matrix.web_framework }}"
+
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Cache cargo registry
+      uses: actions/cache@v1
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('Cargo.toml') }}-lint
+    - name: Cache cargo index
+      uses: actions/cache@v1
+      with:
+        path: ~/.cargo/git
+        key: ${{ runner.os }}-cargo-index-${{ hashFiles('Cargo.toml') }}-lint
+    - name: Cache cargo build
+      uses: actions/cache@v1
+      with:
+        path: ./target
+        key: ${{ runner.os }}-cargo-build-${{ hashFiles('Cargo.toml') }}-lint
+    - name: Run clippy
+      run: cargo clippy --all-targets --all-features -- -D warnings
