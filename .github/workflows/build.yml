@@ -33,10 +33,10 @@ jobs:
     - name: Specify channel
       run: rustup default ${{ matrix.rust_channel }}
     - name: Build core (with ${{ matrix.web_framework }})
-      working-directory: ./tumbleweed_core
+      working-directory: ./tumbleweed
       run: cargo build --verbose --release --features "with-${{ matrix.web_framework }}"
     - name: Test core (with ${{ matrix.web_framework }})
-      working-directory: ./tumbleweed_core
+      working-directory: ./tumbleweed
       run: cargo test --verbose --release --features "with-${{ matrix.web_framework }}"
 
   lint:
