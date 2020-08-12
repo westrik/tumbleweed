@@ -3,5 +3,10 @@ name = "tumbleweed_client"
 version = "0.1.0"
 authors = ["Matt Westrik <m@ttwestrik.com>"]
 edition = "2018"
+license = "Apache-2.0"
+description = "[work-in-progress] application framework"
+homepage = "https://tumbleweed.westrik.dev"
+repository = "https://github.com/westrik/tumbleweed"
+documentation = "https://tumbleweed.westrik.dev/docs/"
 
 [dependencies]
