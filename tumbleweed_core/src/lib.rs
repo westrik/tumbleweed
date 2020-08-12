@@ -63,7 +63,7 @@ mod test_configuration {
 
     #[test]
     fn app_creation() {
-        let app = App {
+        let _app = App {
             name: "Tumbleweed Test App".to_string(),
             frontend_url: "https://www.example.com".to_string(),
             backend_url: "https://api.example.com".to_string(),
