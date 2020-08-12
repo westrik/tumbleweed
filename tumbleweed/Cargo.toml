@@ -3,7 +3,7 @@ name = "tumbleweed"
 version = "0.1.0"
 authors = ["Matt Westrik <m@ttwestrik.com>"]
 edition = "2018"
-license = "Apache-2.0"
+license-file = "../LICENSE"
 description = "[work-in-progress] application framework"
 homepage = "https://tumbleweed.westrik.dev"
 repository = "https://github.com/westrik/tumbleweed"
@@ -23,7 +23,7 @@ pretty_env_logger = "0.4" # might not make sense in this crate
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
-tumbleweed_derive = { path = "../tumbleweed_derive" }
+tumbleweed_derive = { path = "../tumbleweed_derive", version = "0.1" }
 
 [dependencies.warp]
 version = "0.2"

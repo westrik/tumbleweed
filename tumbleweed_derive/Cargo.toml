@@ -3,6 +3,11 @@ name = "tumbleweed_derive"
 version = "0.1.0"
 authors = ["Matt Westrik <m@ttwestrik.com>"]
 edition = "2018"
+license-file = "../LICENSE"
+description = "[work-in-progress] application framework"
+homepage = "https://tumbleweed.westrik.dev"
+repository = "https://github.com/westrik/tumbleweed"
+documentation = "https://tumbleweed.westrik.dev/docs/"
 
 [lib]
 proc-macro = true

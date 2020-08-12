@@ -35,8 +35,6 @@ pub struct App {
 //     pub name: String,
 // }
 //
-//
-//
 // struct Session {
 //     pub expires_at: String,
 // }
