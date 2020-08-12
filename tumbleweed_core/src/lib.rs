@@ -1,3 +1,8 @@
+extern crate pretty_env_logger;
+#[allow(unused_imports)]
+#[macro_use]
+extern crate log;
+
 pub struct App {
     pub name: String,
     pub frontend_url: String,
