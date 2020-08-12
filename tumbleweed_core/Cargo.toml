@@ -9,6 +9,8 @@ with-warp = ["warp"]
 with-tide = ["tide"]
 
 [dependencies]
+dotenv = "0.15"
+lazy_static = "1.4"
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"

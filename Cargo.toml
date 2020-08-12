@@ -2,4 +2,5 @@
 members = [
     "tumbleweed_core",
     "tumbleweed_derive",
+    "tumbleweed_test",
 ]

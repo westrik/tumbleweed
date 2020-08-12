@@ -1,13 +1,7 @@
 [package]
-name = "tumbleweed_derive"
+name = "tumbleweed_test"
 version = "0.1.0"
 authors = ["Matt Westrik <m@ttwestrik.com>"]
 edition = "2018"
 
-[lib]
-proc-macro = true
-
 [dependencies]
-syn = "1.0"
-quote = "1.0"
-proc-macro2 = "1.0"
