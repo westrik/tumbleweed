@@ -9,6 +9,7 @@ use proc_macro::TokenStream;
 
 mod diagnostic;
 mod entity;
+mod schemas;
 
 /// Implements `Model`
 ///
@@ -18,6 +19,23 @@ mod entity;
 /// #[derive(Entity)]
 /// struct CustomEntity;
 /// ```
+///
+/// This should be a function-like proc macro, not a derive macro.
+///
+///  entity! {
+///      User {
+///         id -> BigInt,
+///         api_id -> String,
+///         created_at -> UtcTimestamp,
+///         updated_at -> UtcTimestamp,
+///         name -> String,
+///         password_hash -> HashedPassword,
+///      }
+///  }
+///
+///  Alternatively, entity definitions could be loaded from a config file (e.g. TOML)
+///
+/// load_entity_definitions!("./schema/entities.toml")
 ///
 #[proc_macro_derive(Entity)]
 pub fn derive_model(input: TokenStream) -> TokenStream {

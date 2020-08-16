@@ -1,3 +1,3 @@
 #![deny(warnings)]
 
-mod entity;
+mod derive_entity_schemas;

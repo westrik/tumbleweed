@@ -1,4 +1,5 @@
-// adapted from: diesel/diesel_derives/src/diagnostic_shim.rs
+// Adapted from: diesel/diesel_derives/src/diagnostic_shim.rs
+
 #[cfg(feature = "nightly")]
 pub use proc_macro::Diagnostic;
 
