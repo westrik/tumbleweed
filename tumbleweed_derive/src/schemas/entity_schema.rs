@@ -3,23 +3,29 @@ use toml::map::Map;
 use toml::value::Table;
 
 #[derive(Deserialize, Debug)]
+struct TomlEntitySchema {
+    pub authenticating_entities: Option<Vec<String>>,
+    pub entities: Table,
+}
+
+#[derive(Debug, PartialEq)]
 pub struct EntitySchema {
-    authenticating_entities: Option<Vec<String>>,
-    entities: Table,
+    pub authenticating_entities: Option<Vec<String>>,
+    pub entities: Vec<Entity>,
 }
 
 #[derive(Debug, PartialEq)]
 pub struct Entity {
-    name: String,
-    api_id_prefix: Option<String>,
-    fields: Vec<Field>,
+    pub name: String,
+    pub api_id_prefix: Option<String>,
+    pub fields: Vec<Field>,
 }
 
 #[derive(Debug, PartialEq)]
 pub struct Field {
-    field_name: String,
-    field_type: FieldType,
-    required: bool,
+    pub field_name: String,
+    pub field_type: FieldType,
+    pub required: bool,
 }
 
 #[derive(Deserialize, Debug, PartialEq)]
@@ -39,7 +45,7 @@ pub mod entity_schemas {
 
     #[test]
     fn deserialize_entity_schema_from_toml() {
-        let schema: EntitySchema = toml::from_str(
+        let schema: TomlEntitySchema = toml::from_str(
             r#"
             [entities.user]
             api_id_prefix = "usr"
@@ -137,7 +143,7 @@ pub mod entity_schemas {
 
     #[test]
     fn test_a_thingy() {
-        let schema: EntitySchema = toml::from_str(
+        let schema: TomlEntitySchema = toml::from_str(
             r#"
             [entities.user]
             api_id_prefix = "usr"

@@ -12,36 +12,14 @@ mod entity;
 mod generate_structs_for_schema;
 mod schemas;
 
-/// Implements `Model`
+/// Implements the `generate_structs_for_schemas!()` procedural macro.
 ///
-/// This trait is automatically derived...
+/// This automatically derives struct definitions for entities specified in a TOML schema config.
 ///
 /// ```ignore
-/// #[derive(Entity)]
-/// struct CustomEntity;
+/// load_entity_definitions!("schema.toml")
 /// ```
 ///
-/// This should be a function-like proc macro, not a derive macro.
-///
-///  entity! {
-///      User {
-///         id -> BigInt,
-///         api_id -> String,
-///         created_at -> UtcTimestamp,
-///         updated_at -> UtcTimestamp,
-///         name -> String,
-///         password_hash -> HashedPassword,
-///      }
-///  }
-///
-///  Alternatively, entity definitions could be loaded from a config file (e.g. TOML)
-///
-/// load_entity_definitions!("./schema/entities.toml")
-///
-// #[proc_macro_derive(Entity)]
-// pub fn derive_model(input: TokenStream) -> TokenStream {
-//     expand_proc_macro(input, entity::derive)
-// }
 #[proc_macro]
 pub fn generate_structs_for_schema(input: TokenStream) -> TokenStream {
     match generate_structs_for_schema::expand(input.to_string()) {
