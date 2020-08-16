@@ -1,10 +1,7 @@
 use proc_macro2;
-use quote::ToTokens;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
-use std::path::Path;
-use syn;
 
 use crate::diagnostic::Diagnostic;
 use crate::schemas::entity_schema::{Entity, EntitySchema, Field, FieldType};
@@ -24,7 +21,7 @@ fn load_schema_from_path(path: String) -> Result<EntitySchema, Diagnostic> {
         .map_err(|_| Diagnostic::error("Failed to read schema file"))?;
 
     Ok(EntitySchema {
-        authenticating_entities: None,
+        authenticating_entities: vec![],
         entities: vec![Entity {
             name: "".to_string(),
             api_id_prefix: None,

@@ -18,6 +18,7 @@ impl Diagnostic {
         }
     }
 
+    #[allow(dead_code)]
     pub fn warning<T: Into<String>>(msg: T) -> Self {
         Diagnostic {
             message: msg.into(),
@@ -25,12 +26,14 @@ impl Diagnostic {
         }
     }
 
+    #[allow(dead_code)]
     pub fn help<T: Into<String>>(mut self, msg: T) -> Self {
         self.message.push_str("\n");
         self.message.push_str(&msg.into());
         self
     }
 
+    #[allow(dead_code)]
     pub fn note(self, msg: &str) -> Self {
         self.help(msg)
     }
@@ -44,6 +47,7 @@ impl Diagnostic {
 }
 
 #[cfg(not(feature = "nightly"))]
+#[allow(dead_code)]
 enum Level {
     Warning,
     Error,

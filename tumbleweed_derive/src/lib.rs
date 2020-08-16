@@ -2,13 +2,12 @@ extern crate proc_macro;
 extern crate proc_macro2;
 #[macro_use]
 extern crate quote;
-#[macro_use]
+// #[macro_use]
 extern crate syn;
 
 use proc_macro::TokenStream;
 
 mod diagnostic;
-mod entity;
 mod generate_structs_for_schema;
 mod schemas;
 
