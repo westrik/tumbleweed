@@ -11,13 +11,13 @@ fn load_schema_from_path(path: String) -> Result<EntitySchema, Diagnostic> {
     } else {
         Ok(path.replace("\"", ""))
     }?;
-    let file =
-        File::open(schema_path).map_err(|_| Diagnostic::error("Failed to open schema file"))?;
+    let file = File::open(schema_path)
+        .map_err(|err| Diagnostic::error(format!("Failed to open schema file: {}", err)))?;
     let mut buf_reader = BufReader::new(file);
     let mut contents = String::new();
     buf_reader
         .read_to_string(&mut contents)
-        .map_err(|_| Diagnostic::error("Failed to read schema file"))?;
+        .map_err(|err| Diagnostic::error(format!("Failed to read schema file: {}", err)))?;
 
     Ok(EntitySchema::from_str(&contents)?)
 }

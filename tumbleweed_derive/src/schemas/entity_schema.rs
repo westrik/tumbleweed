@@ -166,12 +166,5 @@ pub mod entity_schemas {
             Ok(schema) => println!("{:#?}", schema),
             Err(err) => err.emit(),
         }
-        // assert_eq!(schema.entities, vec!(Entity {
-        //     fields: vec!(Field {
-        //         identifier: "name".to_string(),
-        //         field_type: FieldType::String,
-        //         required: None
-        //     })
-        // }));
     }
 }
