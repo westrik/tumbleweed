@@ -19,22 +19,24 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ~/.cargo/registry
-        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('Cargo.toml') }}-${{ matrix.rust_channel }}
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.toml') }}-${{ matrix.rust_channel }}
     - name: Cache cargo index
       uses: actions/cache@v1
       with:
         path: ~/.cargo/git
-        key: ${{ runner.os }}-cargo-index-${{ hashFiles('Cargo.toml') }}-${{ matrix.rust_channel }}
+        key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.toml') }}-${{ matrix.rust_channel }}
     - name: Cache cargo build
       uses: actions/cache@v1
       with:
         path: ./target
-        key: ${{ runner.os }}-cargo-build-${{ hashFiles('Cargo.toml') }}-${{ matrix.rust_channel }}
+        key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.toml') }}-${{ matrix.rust_channel }}
     - name: Specify channel
       run: rustup default ${{ matrix.rust_channel }}
-    - name: Build (with ${{ matrix.web_framework }})
+    - name: Build core (with ${{ matrix.web_framework }})
+      working-directory: ./tumbleweed
       run: cargo build --verbose --release --features "with-${{ matrix.web_framework }}"
-    - name: Run tests (with ${{ matrix.web_framework }})
+    - name: Test core (with ${{ matrix.web_framework }})
+      working-directory: ./tumbleweed
       run: cargo test --verbose --release --features "with-${{ matrix.web_framework }}"
 
   lint:
