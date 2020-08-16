@@ -17,9 +17,9 @@ pub struct Entity {
 
 #[derive(Debug, PartialEq)]
 pub struct Field {
-    name: String,
+    field_name: String,
     field_type: FieldType,
-    required: Option<bool>,
+    required: bool,
 }
 
 #[derive(Deserialize, Debug, PartialEq)]
@@ -46,7 +46,8 @@ pub mod entity_schemas {
 
             [entities.user.fields]
             name = { type = "string" }
-            password = { type = "password_hash" }
+            email = { type = "string", required = true }
+            password = { type = "password_hash", required = true }
         "#,
         )
         .unwrap();
@@ -88,10 +89,19 @@ pub mod entity_schemas {
                                                 }
                                                 _ => panic!("Invalid value for field type"),
                                             };
+                                            let required = match field_table.get("required") {
+                                                Some(val) => match val {
+                                                    Value::Boolean(required_bool) => *required_bool,
+                                                    _ => panic!(
+                                                        "Expected boolean for 'required' field"
+                                                    ),
+                                                },
+                                                _ => false,
+                                            };
                                             Field {
-                                                name: field_name.to_string(),
+                                                field_name: field_name.to_string(),
                                                 field_type,
-                                                required: None,
+                                                required,
                                             }
                                         }
                                         _ => panic!("Invalid value for field"),
