@@ -1,3 +1,3 @@
 #![deny(warnings)]
 
-mod derive_entity_schemas;
+mod generate_structs_for_schema;

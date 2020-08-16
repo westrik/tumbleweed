@@ -9,6 +9,7 @@ use proc_macro::TokenStream;
 
 mod diagnostic;
 mod entity;
+mod generate_structs_for_schema;
 mod schemas;
 
 /// Implements `Model`
@@ -37,17 +38,13 @@ mod schemas;
 ///
 /// load_entity_definitions!("./schema/entities.toml")
 ///
-#[proc_macro_derive(Entity)]
-pub fn derive_model(input: TokenStream) -> TokenStream {
-    expand_proc_macro(input, entity::derive)
-}
-
-fn expand_proc_macro<T: syn::parse::Parse>(
-    input: TokenStream,
-    f: fn(T) -> Result<proc_macro2::TokenStream, diagnostic::Diagnostic>,
-) -> TokenStream {
-    let item = syn::parse(input).unwrap();
-    match f(item) {
+// #[proc_macro_derive(Entity)]
+// pub fn derive_model(input: TokenStream) -> TokenStream {
+//     expand_proc_macro(input, entity::derive)
+// }
+#[proc_macro]
+pub fn generate_structs_for_schema(input: TokenStream) -> TokenStream {
+    match generate_structs_for_schema::expand(input.to_string()) {
         Ok(x) => x.into(),
         Err(e) => {
             e.emit();
@@ -55,3 +52,17 @@ fn expand_proc_macro<T: syn::parse::Parse>(
         }
     }
 }
+
+// fn expand_proc_macro<T: syn::parse::Parse>(
+//     input: TokenStream,
+//     f: fn(T) -> Result<proc_macro2::TokenStream, diagnostic::Diagnostic>,
+// ) -> TokenStream {
+//     let item = syn::parse(input).unwrap();
+//     match f(item) {
+//         Ok(x) => x.into(),
+//         Err(e) => {
+//             e.emit();
+//             "".parse().unwrap()
+//         }
+//     }
+// }

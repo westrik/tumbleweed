@@ -1,0 +1,11 @@
+[entities.user]
+api_id_prefix = "usr"
+    [entities.user.fields]
+    name = { type = "string" }
+    email = { type = "string", required = true }
+    password = { type = "password_hash", required = true }
+
+[entities.session]
+    [entities.session.fields]
+    user = { type = "user", relationship = "many_to_one" }
+    expires_at = { type = "utc_timestamp", required = true }
