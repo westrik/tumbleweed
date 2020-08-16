@@ -3,7 +3,7 @@ use std::io::prelude::*;
 use std::io::BufReader;
 
 use crate::diagnostic::Diagnostic;
-use crate::schemas::entity_schema::{Entity, EntitySchema, Field, FieldType};
+use crate::schemas::entity_schema::EntitySchema;
 
 fn load_schema_from_path(path: String) -> Result<EntitySchema, Diagnostic> {
     let schema_path = if path.is_empty() {
@@ -19,18 +19,7 @@ fn load_schema_from_path(path: String) -> Result<EntitySchema, Diagnostic> {
         .read_to_string(&mut contents)
         .map_err(|_| Diagnostic::error("Failed to read schema file"))?;
 
-    Ok(EntitySchema {
-        authenticating_entities: vec![],
-        entities: vec![Entity {
-            name: "".to_string(),
-            api_id_prefix: None,
-            fields: vec![Field {
-                field_name: "fake".to_string(),
-                field_type: FieldType::BigInt,
-                required: false,
-            }],
-        }],
-    })
+    Ok(EntitySchema::from_str(&contents)?)
 }
 
 pub fn expand(path: String) -> Result<proc_macro2::TokenStream, Diagnostic> {

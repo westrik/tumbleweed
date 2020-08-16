@@ -40,7 +40,7 @@ pub enum FieldType {
 }
 
 impl Field {
-    fn from(field_name: &String, field_val: &Value) -> Result<Self, Diagnostic> {
+    fn from_data(field_name: &str, field_val: &Value) -> Result<Self, Diagnostic> {
         let field_table = match field_val {
             Value::Table(ft) => Ok(ft),
             _ => Err(Diagnostic::error(format!(
@@ -95,7 +95,7 @@ impl Field {
 }
 
 impl Entity {
-    fn from(entity_name: &String, entity_val: &Value) -> Result<Self, Diagnostic> {
+    fn from_data(entity_name: &str, entity_val: &Value) -> Result<Self, Diagnostic> {
         let entity_table = match entity_val {
             Value::Table(et) => Ok(et),
             _ => Err(Diagnostic::error(format!(
@@ -115,7 +115,7 @@ impl Entity {
                 Value::Table(fields_table) => {
                     let mut fields: Vec<Field> = vec![];
                     for (field_name, data) in fields_table.iter() {
-                        fields.push(Field::from(field_name, data)?)
+                        fields.push(Field::from_data(field_name, data)?)
                     }
                     Some(fields)
                 }
@@ -132,12 +132,12 @@ impl Entity {
 }
 
 impl EntitySchema {
-    fn from(data: &str) -> Result<Self, Diagnostic> {
+    pub fn from_str(data: &str) -> Result<Self, Diagnostic> {
         let schema: TomlEntitySchema = toml::from_str(data)
             .map_err(|err| Diagnostic::error(format!("Failed to parse TOML: {:#?}", err)))?;
         let mut entities: Vec<Entity> = vec![];
         for (entity_name, data) in schema.entities.iter() {
-            entities.push(Entity::from(entity_name, data)?);
+            entities.push(Entity::from_data(entity_name, data)?);
         }
         Ok(EntitySchema {
             authenticating_entities: vec![],
@@ -152,7 +152,7 @@ pub mod entity_schemas {
 
     #[test]
     fn deserialize_entity_schema_from_toml() {
-        match EntitySchema::from(
+        match EntitySchema::from_str(
             r#"
             [entities.user]
             api_id_prefix = "usr"
