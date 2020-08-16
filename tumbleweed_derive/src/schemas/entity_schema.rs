@@ -1,6 +1,7 @@
 use crate::diagnostic::Diagnostic;
 use serde_derive::Deserialize;
 use toml::value::Table;
+use toml::Value;
 
 #[derive(Deserialize, Debug)]
 struct TomlEntitySchema {
@@ -38,22 +39,109 @@ pub enum FieldType {
     UtcTimestamp,
 }
 
+impl Field {
+    fn from_data(field_name: &str, field_val: &Value) -> Result<Self, Diagnostic> {
+        let field_table = match field_val {
+            Value::Table(ft) => Ok(ft),
+            _ => Err(Diagnostic::error(format!(
+                "Expected table for field {}",
+                field_name
+            ))),
+        }?;
+        let field_type = {
+            let type_val = match field_table.get("type") {
+                Some(tv) => Ok(tv),
+                None => Err(Diagnostic::error(format!(
+                    "Expected type for field {}",
+                    field_name
+                ))),
+            }?;
+            let type_str = match type_val {
+                Value::String(ts) => Ok(ts),
+                _ => Err(Diagnostic::error(format!(
+                    "Expected type to be string for field {}",
+                    field_name
+                ))),
+            }?;
+            match type_str.as_str() {
+                "big_int" => Ok(FieldType::BigInt),
+                "int" => Ok(FieldType::Int),
+                "json_blob" => Ok(FieldType::JsonBlob),
+                "password_hash" => Ok(FieldType::PasswordHash),
+                "string" => Ok(FieldType::String),
+                "utc_timestamp" => Ok(FieldType::UtcTimestamp),
+                _ => Err(Diagnostic::error(format!(
+                    "Invalid field type: {}",
+                    type_str
+                ))),
+            }?
+        };
+        let required = match field_table.get("required") {
+            Some(val) => match val {
+                Value::Boolean(required_bool) => Ok(*required_bool),
+                _ => Err(Diagnostic::error(format!(
+                    "Expected required to be boolean for field {}",
+                    field_name
+                ))),
+            },
+            _ => Ok(false),
+        }?;
+        Ok(Field {
+            field_name: field_name.to_string(),
+            field_type,
+            required,
+        })
+    }
+}
+
+impl Entity {
+    fn from_data(entity_name: &str, entity_val: &Value) -> Result<Self, Diagnostic> {
+        let entity_table = match entity_val {
+            Value::Table(et) => Ok(et),
+            _ => Err(Diagnostic::error(format!(
+                "Expected table for entity {}",
+                entity_name
+            ))),
+        }?;
+        let api_id_prefix = match entity_table.get("api_id_prefix") {
+            Some(prefix) => match prefix {
+                Value::String(prefix_str) => Ok(Some(prefix_str.to_string())),
+                _ => Err(Diagnostic::error("Invalid value for api_id_prefix")),
+            },
+            None => Ok(None),
+        }?;
+        let fields = match entity_table.get("fields") {
+            Some(fields) => match fields {
+                Value::Table(fields_table) => {
+                    let mut fields: Vec<Field> = vec![];
+                    for (field_name, data) in fields_table.iter() {
+                        fields.push(Field::from_data(field_name, data)?)
+                    }
+                    Some(fields)
+                }
+                _ => panic!("Invalid value for fields"),
+            },
+            None => None,
+        };
+        Ok(Entity {
+            name: entity_name.to_string(),
+            api_id_prefix,
+            fields: fields.unwrap(),
+        })
+    }
+}
+
 impl EntitySchema {
-    #[allow(dead_code)]
-    fn from(data: &str) -> Result<Self, Diagnostic> {
-        let _schema: TomlEntitySchema = toml::from_str(data)
+    pub fn from_str(data: &str) -> Result<Self, Diagnostic> {
+        let schema: TomlEntitySchema = toml::from_str(data)
             .map_err(|err| Diagnostic::error(format!("Failed to parse TOML: {:#?}", err)))?;
+        let mut entities: Vec<Entity> = vec![];
+        for (entity_name, data) in schema.entities.iter() {
+            entities.push(Entity::from_data(entity_name, data)?);
+        }
         Ok(EntitySchema {
             authenticating_entities: vec![],
-            entities: vec![Entity {
-                name: "".to_string(),
-                api_id_prefix: None,
-                fields: vec![Field {
-                    field_name: "fake".to_string(),
-                    field_type: FieldType::BigInt,
-                    required: false,
-                }],
-            }],
+            entities,
         })
     }
 }
@@ -64,7 +152,7 @@ pub mod entity_schemas {
 
     #[test]
     fn deserialize_entity_schema_from_toml() {
-        match EntitySchema::from(
+        match EntitySchema::from_str(
             r#"
             [entities.user]
             api_id_prefix = "usr"
@@ -75,105 +163,8 @@ pub mod entity_schemas {
             password = { type = "password_hash", required = true }
         "#,
         ) {
-            Ok(_schema) => {}
+            Ok(schema) => println!("{:#?}", schema),
             Err(err) => err.emit(),
-        }
-
-        // TODO: deserialize Table as an Entity
-
-        // for entity_spec in schema.entities.iter() {
-        //     let entity = match entity_spec.1 {
-        //         Value::Table(et) => {
-        //             let api_id_prefix = match et.get("api_id_prefix") {
-        //                 Some(prefix) => match prefix {
-        //                     Value::String(prefix_str) => Some(prefix_str.to_string()),
-        //                     _ => panic!("Invalid value for api_id_prefix"),
-        //                 },
-        //                 None => None,
-        //             };
-        //             let fields = match et.get("fields") {
-        //                 Some(fields) => match fields {
-        //                     Value::Table(fields_table) => {
-        //                         println!("{:#?}", fields_table);
-        //
-        //                         let mut fields_spec: Vec<Field> = vec![];
-        //                         for (field_name, data) in fields_table.iter() {
-        //                             fields_spec.push(match data {
-        //                                 Value::Table(field_table) => {
-        //                                     let field_type = match field_table.get("type").unwrap()
-        //                                     {
-        //                                         Value::String(type_str) => {
-        //                                             let type_str = type_str.to_string();
-        //                                             match type_str.as_str() {
-        //                                                 "big_int" => FieldType::BigInt,
-        //                                                 "int" => FieldType::Int,
-        //                                                 "json_blob" => FieldType::JsonBlob,
-        //                                                 "password_hash" => FieldType::PasswordHash,
-        //                                                 "string" => FieldType::String,
-        //                                                 "utc_timestamp" => FieldType::UtcTimestamp,
-        //                                                 _ => panic!("Invalid field type"),
-        //                                             }
-        //                                         }
-        //                                         _ => panic!("Invalid value for field type"),
-        //                                     };
-        //                                     let required = match field_table.get("required") {
-        //                                         Some(val) => match val {
-        //                                             Value::Boolean(required_bool) => *required_bool,
-        //                                             _ => panic!(
-        //                                                 "Expected boolean for 'required' field"
-        //                                             ),
-        //                                         },
-        //                                         _ => false,
-        //                                     };
-        //                                     Field {
-        //                                         field_name: field_name.to_string(),
-        //                                         field_type,
-        //                                         required,
-        //                                     }
-        //                                 }
-        //                                 _ => panic!("Invalid value for field"),
-        //                             });
-        //                         }
-        //                         Some(fields_spec)
-        //                     }
-        //                     _ => panic!("Invalid value for fields"),
-        //                 },
-        //                 None => None,
-        //             };
-        //             Entity {
-        //                 name: entity_spec.0.to_string(),
-        //                 api_id_prefix,
-        //                 fields: fields.unwrap(),
-        //             }
-        //         }
-        //         _ => panic!("Unexpected toml value"),
-        //     };
-        //     println!("got entity => {:#?}", entity);
-        // }
-
-        // TODO: deserialize Table as a Field
-
-        // assert_eq!(schema.entities, vec!(Entity {
-        //     fields: vec!(Field {
-        //         identifier: "name".to_string(),
-        //         field_type: FieldType::String,
-        //         required: None
-        //     })
-        // }));
-    }
-
-    #[test]
-    fn test_a_thingy() {
-        let schema: TomlEntitySchema = toml::from_str(
-            r#"
-            [entities.user]
-            api_id_prefix = "usr"
-            fields = { name = { type = "string" } }
-        "#,
-        )
-        .unwrap();
-        for entity_spec in schema.entities.iter() {
-            println!("{} => {:#?}", entity_spec.0, entity_spec.1);
         }
     }
 }
