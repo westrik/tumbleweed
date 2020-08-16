@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "todos_client",
+    "todos_core",
+]
