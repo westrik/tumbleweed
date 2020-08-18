@@ -3,3 +3,7 @@ members = [
     "todos_client",
     "todos_core",
 ]
+
+[profile.release]
+lto = true
+opt-level = 's'
