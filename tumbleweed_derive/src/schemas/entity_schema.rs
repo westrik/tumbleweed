@@ -34,7 +34,7 @@ pub enum FieldType {
     BigInt,
     Int,
     JsonBlob,
-    PasswordHash,
+    Password,
     String,
     UtcTimestamp,
 }
@@ -67,7 +67,7 @@ impl Field {
                 "big_int" => Ok(FieldType::BigInt),
                 "int" => Ok(FieldType::Int),
                 "json_blob" => Ok(FieldType::JsonBlob),
-                "password_hash" => Ok(FieldType::PasswordHash),
+                "password" => Ok(FieldType::Password),
                 "string" => Ok(FieldType::String),
                 "utc_timestamp" => Ok(FieldType::UtcTimestamp),
                 _ => Err(Diagnostic::error(format!(
