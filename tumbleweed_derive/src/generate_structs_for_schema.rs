@@ -42,7 +42,7 @@ pub fn expand(path: String) -> Result<proc_macro2::TokenStream, Diagnostic> {
                             FieldType::Int => "i32",
                             FieldType::JsonBlob => "serde_json::Value",
                             // TODO: generate conversion impls for password hashing
-                            FieldType::PasswordHash => "String",
+                            FieldType::Password => "String",
                             FieldType::String => "String",
                             // TODO: generate conversion impls for datetimes
                             FieldType::UtcTimestamp => "String",
