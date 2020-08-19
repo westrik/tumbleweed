@@ -3,8 +3,8 @@ extern crate wee_alloc;
 use tumbleweed_todos_core::*;
 use wasm_bindgen::prelude::*;
 
-// #[global_allocator]
-// static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 // TODO: reduce bundle size by:
 //  - removing panic infrastructure
