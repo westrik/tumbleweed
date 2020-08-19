@@ -1,6 +1,39 @@
 [entities.user]
-api_id_prefix = "usr"
-    [entities.user.fields]
-    name = { type = "string" }
-    email = { type = "string", required = true }
-    password = { type = "password", required = true }
+identity_prefix = "usr"
+
+  [entities.user.fields]
+  name = { type = "string" }
+  email = { type = "string", required = true }
+  password = { type = "password", required = true }
+
+
+[entities.session]
+identifiable = false
+track_updated_at = false
+
+  [entities.session.fields]
+  user = { type = "link", to = "user", required = true }
+  expires_at = { type = "utc_timestamp", required = true }
+
+
+[entities.task]
+identity_prefix = "tak"
+
+  [entities.task.fields]
+  creator = { type = "link", to = "user", required = true }
+  name = { type = "string", deprecated = true }
+  description = { type = "string", required = true }
+  completed_at = { type = "utc_timestamp" }
+  tags = { type = "multi_link", to = "tag" }
+
+
+[entities.tag]
+identity_prefix = "tag"
+
+  [entities.tag.fields]
+  creator = { type = "link", to = "user", required = true }
+  name = { type = "string", required = true }
+  description = { type = "string" }
+  tags = { type = "multi_link", to = "tag" }
+
+
