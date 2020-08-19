@@ -1,6 +1,6 @@
 extern crate wee_alloc;
 
-use tumbleweed_todos_core::*;
+use tumbleweed_todos::*;
 use wasm_bindgen::prelude::*;
 
 #[global_allocator]

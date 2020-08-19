@@ -1,10 +1,11 @@
-[workspace]
-members = [
-    "todos_client",
-    "todos_core",
-]
+[package]
+name = "tumbleweed_todos"
+version = "0.1.0"
+authors = ["Matt Westrik <m@ttwestrik.com>"]
+edition = "2018"
 
-[profile.release]
-lto = true
-opt-level = 's'
-#panic = "abort"
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
+
+[workspace]
