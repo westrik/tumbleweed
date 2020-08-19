@@ -12,3 +12,7 @@ wee_alloc = "0.4"
 
 [lib]
 crate-type = ["cdylib"]
+
+# see https://github.com/rustwasm/wasm-pack/issues/793
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
